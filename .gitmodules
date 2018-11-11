@@ -1,0 +1,3 @@
+[submodule "code/HDPHMM_HDPSLDS_toolbox/lightspeed"]
+	path = code/HDPHMM_HDPSLDS_toolbox/lightspeed
+	url = https://github.com/tminka/lightspeed.git
