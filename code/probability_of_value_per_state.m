@@ -6,7 +6,7 @@
 % probs is the probability that, for each state, the values observed might be pulled from
 % the model predicted by that state, for each time.
 % it is of dimension time by number_of_states
-function [probs] = probability_of_value(data, coeffs, mean_squared_error)
+function [probs] = probability_of_value_per_state(data, coeffs, mean_squared_error)
 %%
 % %initialization for testing function (normally commented out)
 % timeSeriesName = "../pose_data_all_1.txt";
@@ -22,11 +22,12 @@ measurement_dimension = size(data,2);
 time = size(data,1);
 degree = size(coeffs,3);
 num_states = size(coeffs,1);
-padded_data = [zeros(degree, measurement_dimension); data];
+% pad the data with the first value (not with zeros)
+padded_data = [repmat(data(1,:),degree,1); data];
 real_time_indices = (1:time) + degree;
 probs = ones(time, num_states);
 %%
-for (meas_var = 1:measurement_dimension)
+for meas_var = 1:measurement_dimension
     %%
     y = padded_data(real_time_indices, meas_var);
     X = zeros(time,degree);
@@ -43,5 +44,7 @@ end
 % normalize since you must be in some state
 sum_probs = sum(probs, 2);
 probs = ((probs') ./ sum_probs')';
+% get rid of NaNs induced by overly large z_scores
+probs(sum_probs==0,:) = 1/num_states;
 
 end
