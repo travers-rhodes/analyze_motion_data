@@ -18,9 +18,9 @@ fitIntercept = true;
 regularization_param = 0.01;
 % magic parameter that decides how quickly we update the transition and init matrices
 % setting this to 1 makes it not exist
-update_size = 1;
+update_size = 0.1;
 % whether the transition dynamics of HMM are believed at all
-trust_HMM = 1;
+trust_HMM = 0.1;
 
 %% randomly initialize transition probabilities
 [init, transition] = initialize_HMM(num_states);
