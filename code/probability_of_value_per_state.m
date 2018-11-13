@@ -57,7 +57,7 @@ for meas_var = 1:measurement_dimension
     end
     resid_y = y - pred_y;
     z_score = resid_y ./ sqrt(mean_squared_error(:,meas_var))';
-    probs = probs .* normpdf(z_score);
+    probs = probs .* normpdf(z_score) ./ sqrt(mean_squared_error(:,meas_var))';
 end
 % normalize since you must be in some state
 sum_probs = sum(probs, 2);

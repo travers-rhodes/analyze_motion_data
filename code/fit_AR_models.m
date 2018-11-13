@@ -41,7 +41,7 @@ for state = 1:num_states
     
     [~, most_probable_indices] = sort(prob_each_state(:,state),'descend');
     non_zero_prob_indices = find(prob_each_state(:,state) > 0);
-    raw_data_indices = non_zero_prob_indices;%intersect(most_probable_indices(1:ceil(time/num_states)),non_zero_prob_indices);
+    raw_data_indices = non_zero_prob_indices;%intersect(most_probable_indices(1:ceil(num_states * time/(num_states+ 1))),non_zero_prob_indices);
     data_indices =  raw_data_indices + degree;
     if size(data_indices,1) == 0
         continue
@@ -54,9 +54,13 @@ for state = 1:num_states
         end
         % scale weights?
         weights = prob_each_state(raw_data_indices,state);
-        weights = weights * time / sum(weights);
-        lm = fitlm(X,y,'Intercept',fitIntercept, 'Weights', weights);
-        coeffs(state, meas_var, :) = lm.Coefficients.Estimate;
-        mean_squared_error(state,  meas_var) = lm.MSE;
+        weights = time * rescale_weights(weights);
+        % weights = weights * size(raw_data_indices,1) / sum(weights);
+        %lm = fitlm(X,y,'Intercept',fitIntercept, 'Weights', weights);
+        %coeffs(state, meas_var, :) = lm.Coefficients.Estimate;
+        %mean_squared_error(state,  meas_var) = lm.MSE;
+        [B,FitInfo] = lasso(X,y,'Weights', weights);
+        coeffs(state, meas_var, :) = [FitInfo.Intercept(:,25),B(:,25)'];
+        mean_squared_error(state,  meas_var) = FitInfo.MSE(:,25);
     end
 end
