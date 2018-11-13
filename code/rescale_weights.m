@@ -6,6 +6,6 @@ function [new_weights] = rescale_weights(weights)
     shift_down = 1 - weights;
     weights = weights - abs(shift_down);
     weights = weights + abs(weights);
-    weights = weights.^4.0;
+    weights = weights.^8.0;
     new_weights = weights / sum(weights);
 end

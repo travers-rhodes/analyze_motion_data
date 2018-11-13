@@ -8,10 +8,10 @@ function [states, coeffs, mean_squared_error] = expectation_maximize(data, num_s
 timeSeriesName = "../pose_data_all_1.txt";
 data = dlmread(timeSeriesName);
 %data = data(1:100000,3);
-data = smoothdata(data(1:100000,3));
+data = smoothdata(data(1:100000,:));
 %data = smoothdata(data(1:100000,:),'gaussian',500);
-num_states = 2;
-degree = 1;
+num_states = 3;
+degree = 3;
 fitIntercept = true;
 % force the computed MSE's of different states to not get too different.
 % setting this to 0 makes it not exist
@@ -20,7 +20,7 @@ regularization_param = 0.01;
 % setting this to 1 makes it not exist
 update_size = 0.1;
 % whether the transition dynamics of HMM are believed at all
-trust_HMM = 1;
+trust_HMM = 0.1;
 
 %% randomly initialize transition probabilities
 [init, transition] = initialize_HMM(num_states);
