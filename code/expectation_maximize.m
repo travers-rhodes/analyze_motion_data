@@ -10,7 +10,7 @@ data = dlmread(timeSeriesName);
 %data = data(1:100000,3);
 data = smoothdata(data(1:100000,:));
 %data = smoothdata(data(1:100000,:),'gaussian',500);
-num_states = 3;
+num_states = 5;
 degree = 3;
 fitIntercept = true;
 % force the computed MSE's of different states to not get too different.
@@ -71,7 +71,7 @@ for run_counter = 1:100
     % plotting code
     clf;
     hold on
-    for i = 1:num_states-1
+    for i = 1:num_states
         plot(new_prob_each_state(:,i))
     end
     plot(data)
@@ -80,7 +80,7 @@ for run_counter = 1:100
     first_run = false;
 end
 hold on
-for i = 1:num_states-1
+for i = 1:num_states
     plot(new_prob_each_state(:,i))
 end
 plot(data)
