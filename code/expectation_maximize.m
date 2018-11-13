@@ -20,7 +20,7 @@ regularization_param = 0.01;
 % setting this to 1 makes it not exist
 update_size = 0.1;
 % whether the transition dynamics of HMM are believed at all
-trust_HMM = 0.1;
+trust_HMM = 1;
 
 %% randomly initialize transition probabilities
 [init, transition] = initialize_HMM(num_states);
@@ -32,7 +32,7 @@ prob_each_state = unscaled_prob_each_state ./ sum(unscaled_prob_each_state,2);
 first_run = true;
 
 %%
-for run_counter = 1:50
+for run_counter = 1:100
     %%
     "running " + run_counter
     % fit AR model
