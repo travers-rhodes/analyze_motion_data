@@ -55,11 +55,11 @@ for state = 1:num_states
         % scale weights?
         weights = prob_each_state(raw_data_indices,state);
         weights = time * rescale_weights(weights);
-        % weights = weights * size(raw_data_indices,1) / sum(weights);
-        %lm = fitlm(X,y,'Intercept',fitIntercept, 'Weights', weights);
-        %coeffs(state, meas_var, :) = lm.Coefficients.Estimate;
-        %mean_squared_error(state,  meas_var) = lm.MSE;
-        [B,FitInfo] = lasso(X,y,'Weights', weights);
+%         weights = weights * size(raw_data_indices,1) / sum(weights);
+%         lm = fitlm(X,y,'Intercept',fitIntercept, 'Weights', weights);
+%         coeffs(state, meas_var, :) = lm.Coefficients.Estimate;
+%         mean_squared_error(state,  meas_var) = lm.MSE;
+        [B,FitInfo] = lasso(X,y,'Alpha',0.5,'Weights', weights);
         coeffs(state, meas_var, :) = [FitInfo.Intercept(:,25),B(:,25)'];
         mean_squared_error(state,  meas_var) = FitInfo.MSE(:,25);
     end

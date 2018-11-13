@@ -5,13 +5,14 @@
 function [states, coeffs, mean_squared_error] = expectation_maximize(data, num_states, degree)
 %%
 %initialization for testing function (normally commented out)
-timeSeriesName = "../pose_data_all_1.txt";
+timeSeriesName = "../pose_data_full_1.txt";
 data = dlmread(timeSeriesName);
+rng(0)
 %data = data(1:100000,3);
 data = smoothdata(data(1:100000,:));
 %data = smoothdata(data(1:100000,:),'gaussian',500);
 num_states = 5;
-degree = 3;
+degree = 2;
 fitIntercept = true;
 % force the computed MSE's of different states to not get too different.
 % setting this to 0 makes it not exist
@@ -48,7 +49,7 @@ for run_counter = 1:100
     % artificially regularize the mean_squared_errors to avoid divergences.
     % (average each mean squared error toward the mean mean squared
     % error...you know?)
-    mean_squared_error = (1-regularization_param) * mean_squared_error + regularization_param * sum(mean_squared_error)/num_states;
+    mean_squared_error = (1-regularization_param) * mean_squared_error + regularization_param * sum(mean_squared_error)/num_states
     
     % compute probability of emitting each value given AR model for each state
     [probs] = probability_of_value_per_state(data, coeffs, mean_squared_error, fitIntercept);
