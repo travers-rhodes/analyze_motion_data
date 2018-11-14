@@ -5,6 +5,7 @@
 % The spoon travels like the sqrt of the remaining distance to its destination
 % at each timestep or something like that, switching target every period
 % length seconds
+rng(0)
 period = 100;
 num_period = 10;
 time = period*num_period;
@@ -41,7 +42,7 @@ for perd = 1:num_period
         indx = indx + 1;
     end
 end
-spoon_pos = smoothdata(spoon_pos);
+%spoon_pos = smoothdata(spoon_pos);
 
 clf;
 hold on
@@ -51,14 +52,15 @@ hold off
 data = spoon_pos;
 env_data = head_pos;
 
-num_states = 20;
+num_states = 5;
 degree = 1;
 
 first_diff =  data(2:time,:) - data(1:(time-1),:);
-[prob_each_state, coeffs, mean_squared_error] = expectation_maximize(data, num_states, degree);
+additional_info = head_pos;
+[prob_each_state, coeffs, mean_squared_error] = expectation_maximize(data, num_states, degree, additional_info);
 
 start = data(1);
-est_path = get_computed_path(start, coeffs, prob_each_state);
+est_path = get_computed_path(start, coeffs, prob_each_state, additional_info);
 
 clf;
 hold on

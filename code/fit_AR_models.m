@@ -6,13 +6,16 @@
 % degree is the degree of the AR model
 % fitIntercept says whether we allow the AR model to have an intercept term
 % (is that legal?)
+% additional_info is a matrix of size time x number_of_additional_info that
+% lists extra world-state information the model can use, like head position at each
+% time.
 % OUTPUT
 % coeffs_mat is a num_states by meas_dimension by degree matrix of coefficients
 % used to predict next value, in formula x_n = c[1] x_n-1 + c[2] x_n-2
 % mean_squared_error is of dimension num_states by meas_dimension, and gives an estimate
 % of the variance of residuals (used as a probability measure for state
 % distribution around the predicted value)
-function [coeffs, mean_squared_error] = fit_AR_models(data, prob_each_state, num_states, degree, fitIntercept)
+function [coeffs, mean_squared_error] = fit_AR_models(data, prob_each_state, num_states, degree, fitIntercept, additional_info)
 %%
 % %initialization for testing function (normally commented out)
 % timeSeriesName = "../pose_data_all_1.txt";
@@ -30,14 +33,15 @@ function [coeffs, mean_squared_error] = fit_AR_models(data, prob_each_state, num
 %to me, so let's do that
 time = size(data,1);
 measurement_dimension = size(data,2);
+addl_info_count = size(additional_info,2);
 padded_data = [zeros(degree, measurement_dimension); data];
 for i = 1:degree
     padded_data(i,:) = data(degree+1,:);
 end
 if fitIntercept
-    coeffs = zeros(num_states, measurement_dimension, degree + 1);
+    coeffs = zeros(num_states, measurement_dimension, degree + addl_info_count + 1);
 else
-    coeffs = zeros(num_states, measurement_dimension, degree);
+    coeffs = zeros(num_states, measurement_dimension, degree + addl_info_count);
 end
 mean_squared_error = zeros(num_states, measurement_dimension);
 for state = 1:num_states
@@ -51,9 +55,12 @@ for state = 1:num_states
     end
     for meas_var = 1:measurement_dimension
         y = padded_data(data_indices, meas_var);
-        X = zeros(size(data_indices,1),degree);
+        X = zeros(size(data_indices,1),degree + addl_info_count);
         for deg = 1:degree
             X(:,deg) = padded_data(data_indices - deg, meas_var);
+        end
+        for extra = 1:addl_info_count
+            X(:,degree + extra) = additional_info(raw_data_indices,extra);
         end
         % scale weights?
         weights = prob_each_state(raw_data_indices,state);

@@ -2,7 +2,7 @@
 % state labels is the assignment of each data to its corresponding hidden
 % state. It is a Time x 1 matrix
 % num_states is the number of hidden states (we build one AR for each)
-function [prob_each_state, coeffs, mean_squared_error] = expectation_maximize(data, num_states, degree)
+function [prob_each_state, coeffs, mean_squared_error] = expectation_maximize(data, num_states, degree, additional_info)
 %%
 % %initialization for testing function (normally commented out)
 % timeSeriesName = "../pose_data_full_1.txt";
@@ -41,7 +41,7 @@ first_run = true;
 for run_counter = 1:100
     %%
     % fit AR model
-    [new_coeffs, new_mean_squared_error] = fit_AR_models(data, prob_each_state, num_states, degree, fitIntercept);
+    [new_coeffs, new_mean_squared_error] = fit_AR_models(data, prob_each_state, num_states, degree, fitIntercept, additional_info);
     "running " + run_counter
     squeeze(new_mean_squared_error)
     squeeze(new_coeffs)
