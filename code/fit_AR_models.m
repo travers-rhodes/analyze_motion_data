@@ -31,6 +31,9 @@ function [coeffs, mean_squared_error] = fit_AR_models(data, prob_each_state, num
 time = size(data,1);
 measurement_dimension = size(data,2);
 padded_data = [zeros(degree, measurement_dimension); data];
+for i = 1:degree
+    padded_data(i,:) = data(degree+1,:);
+end
 if fitIntercept
     coeffs = zeros(num_states, measurement_dimension, degree + 1);
 else
@@ -56,11 +59,17 @@ for state = 1:num_states
         weights = prob_each_state(raw_data_indices,state);
         weights = time * rescale_weights(weights);
 %         weights = weights * size(raw_data_indices,1) / sum(weights);
-%         lm = fitlm(X,y,'Intercept',fitIntercept, 'Weights', weights);
-%         coeffs(state, meas_var, :) = lm.Coefficients.Estimate;
-%         mean_squared_error(state,  meas_var) = lm.MSE;
-        [B,FitInfo] = lasso(X,y,'Alpha',0.5,'Weights', weights);
-        coeffs(state, meas_var, :) = [FitInfo.Intercept(:,25),B(:,25)'];
-        mean_squared_error(state,  meas_var) = FitInfo.MSE(:,25);
+        lm = fitlm(X,y,'Intercept',fitIntercept, 'Weights', weights);
+        coeffs(state, meas_var, :) = lm.Coefficients.Estimate;
+        mean_squared_error(state,  meas_var) = lm.MSE;
+%         [B,FitInfo] = lasso(X,y,'Alpha',0.5,'Weights', weights);
+%         lassoChoice = 1;
+%         if size(B,2) < lassoChoice
+%            coeffs(state, meas_var, :) = [FitInfo.Intercept(size(B,2)),B(:,size(B,2))'];
+%            mean_squared_error(state,  meas_var) = FitInfo.MSE(size(B,2));
+%         else
+%             coeffs(state, meas_var, :) = [FitInfo.Intercept(:,25),B(:,25)'];
+%             mean_squared_error(state,  meas_var) = FitInfo.MSE(:,25);
+%         end
     end
 end
