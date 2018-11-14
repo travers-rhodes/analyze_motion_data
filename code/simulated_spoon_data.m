@@ -41,10 +41,10 @@ for perd = 1:num_period
         indx = indx + 1;
     end
 end
+spoon_pos = smoothdata(spoon_pos);
+
 clf;
 hold on
-plot(head_pos);
-plot(bowl_pos);
 plot(spoon_pos);
 hold off
 
@@ -54,13 +54,20 @@ env_data = head_pos;
 num_states = 20;
 degree = 1;
 
+first_diff =  data(2:time,:) - data(1:(time-1),:);
 [prob_each_state, coeffs, mean_squared_error] = expectation_maximize(data, num_states, degree);
 
-start = 3;
-est_path = get_computed_path(start, coeffs, prob_each_state, time);
+start = data(1);
+est_path = get_computed_path(start, coeffs, prob_each_state);
 
 clf;
 hold on
 plot(data)
 plot(est_path)
 hold off
+
+% clf;
+% hold on
+% plot(cumsum(first_diff))
+% plot(cumsum(est_path))
+% hold off

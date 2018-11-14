@@ -22,11 +22,11 @@ fitIntercept = true;
 regularization_param = 0.00;
 % magic parameter that decides how quickly we update the transition and init matrices
 % setting this to 1 makes it not exist
-update_size = 1;
+update_size = .9;
 % whether the transition dynamics of HMM are believed at all
-trust_HMM = 0.5;
+trust_HMM = 0.2;
 % up the MSE slightly to avoid problems when fit is perfect
-mse_fudge = 0.00001;
+mse_fudge = 0.0000001;
 
 %% randomly initialize transition probabilities
 [init, transition] = initialize_HMM(num_states);

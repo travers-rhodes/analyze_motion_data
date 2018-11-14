@@ -1,7 +1,7 @@
-function [path] = get_computed_path(start, coeffs, prob_states, time)
+function [path] = get_computed_path(start, coeffs, prob_states)
 %%
+time = size(prob_states,1);
 path = zeros(time,size(start,2));
-
 % assume we have an intercept
 degree = size(coeffs,3) - 1;
 num_states = size(prob_states,2);
