@@ -51,7 +51,16 @@ hold off
 data = spoon_pos;
 env_data = head_pos;
 
-num_states = 6;
+num_states = 15;
 degree = 1;
 
 [prob_each_state, coeffs, mean_squared_error] = expectation_maximize(data, num_states, degree);
+
+start = 3;
+est_path = get_computed_path(start, coeffs, prob_each_state, time);
+
+clf;
+hold on
+plot(data)
+plot(est_path)
+hold off

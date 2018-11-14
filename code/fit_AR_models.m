@@ -63,7 +63,7 @@ for state = 1:num_states
 %         coeffs(state, meas_var, :) = lm.Coefficients.Estimate;
 %         mean_squared_error(state,  meas_var) = lm.MSE;
         [B,FitInfo] = lasso(X,y,'Alpha',0.5,'Weights', weights);
-        lassoChoice = 1;
+        lassoChoice = 25;
         if size(B,2) < lassoChoice
            coeffs(state, meas_var, :) = [FitInfo.Intercept(size(B,2)),B(:,size(B,2))'];
            mean_squared_error(state,  meas_var) = FitInfo.MSE(size(B,2));

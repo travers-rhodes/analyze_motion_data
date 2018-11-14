@@ -22,9 +22,9 @@ fitIntercept = true;
 regularization_param = 0.00;
 % magic parameter that decides how quickly we update the transition and init matrices
 % setting this to 1 makes it not exist
-update_size = 0.1;
+update_size = 1;
 % whether the transition dynamics of HMM are believed at all
-trust_HMM = 0.0;
+trust_HMM = 0.5;
 % up the MSE slightly to avoid problems when fit is perfect
 mse_fudge = 0.00001;
 
@@ -43,8 +43,8 @@ for run_counter = 1:100
     % fit AR model
     [new_coeffs, new_mean_squared_error] = fit_AR_models(data, prob_each_state, num_states, degree, fitIntercept);
     "running " + run_counter
-    squeeze(new_coeffs)
     squeeze(new_mean_squared_error)
+    squeeze(new_coeffs)
     % slowly update params
     if first_run
         coeffs = new_coeffs;
