@@ -8,7 +8,7 @@
 period = 20;
 num_period = 50;
 time = period*num_period;
-
+additional_data = zeros(time,0);
 pos = zeros(time,1);
 
 indx = 1;
@@ -34,10 +34,10 @@ data = pos;
 num_states = 2;
 degree = 1;
     
-[prob_each_state, coeffs, mean_squared_error] = expectation_maximize(data, num_states, degree);
+[prob_each_state, coeffs, mean_squared_error] = expectation_maximize(data, num_states, degree,additional_data);
 
 start = 0;
-est_path = get_computed_path(start, coeffs, prob_each_state, time);
+est_path = get_computed_path(start, coeffs, prob_each_state,additional_data);
 
 clf;
 hold on
