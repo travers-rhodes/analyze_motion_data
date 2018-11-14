@@ -51,7 +51,7 @@ hold off
 data = spoon_pos;
 env_data = head_pos;
 
-num_states = 15;
+num_states = 20;
 degree = 1;
 
 [prob_each_state, coeffs, mean_squared_error] = expectation_maximize(data, num_states, degree);
