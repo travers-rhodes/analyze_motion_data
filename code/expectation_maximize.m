@@ -38,7 +38,7 @@ prob_each_state = unscaled_prob_each_state ./ sum(unscaled_prob_each_state,2);
 first_run = true;
 
 %%
-for run_counter = 1:100
+for run_counter = 1:10
     %%
     % fit AR model
     [new_coeffs, new_mean_squared_error] = fit_AR_models(data, prob_each_state, num_states, degree, fitIntercept, additional_info);
