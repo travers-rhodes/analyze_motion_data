@@ -19,7 +19,7 @@ with open("pose_data_full_sample.txt", "w+") as f:
             last_hat_msg = msg
       
         if last_spoon_msg and last_hat_msg and "spoon" in topic:
-            f.write("%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n" % (
+            f.write("%s,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n" % (t,
                 last_spoon_msg.pose.position.x, last_spoon_msg.pose.position.y, last_spoon_msg.pose.position.z,
                 last_spoon_msg.pose.orientation.w, last_spoon_msg.pose.orientation.x, 
                 last_spoon_msg.pose.orientation.y, last_spoon_msg.pose.orientation.z,
@@ -52,7 +52,7 @@ all_data = np.loadtxt('pose_data_full_sample.txt', delimiter=',')
 # see https://hmmlearn.readthedocs.io/en/latest/tutorial.html
 
 # smooth the data
-raw_z_data = all_data[:,2:3]
+raw_z_data = all_data[:,3:4]
 z_data = lowess(np.squeeze(raw_z_data), range(np.size(raw_z_data,0)), is_sorted=True, frac=0.025, it=0)[:,1:2]
 # First division is the nice "waiting/feeding"
 plot_with_n_components(2,z_data)
