@@ -9,13 +9,16 @@
 % additional_info is a matrix of size time x number_of_additional_info that
 % lists extra world-state information the model can use, like head position at each
 % time.
+% is_ref_frame_additional: boolean indicating if the "additional_info" is a
+% reference frame point (that is either added to or not added to
+% predictions, depending on which fits best).
 % OUTPUT
 % coeffs_mat is a num_states by meas_dimension by degree matrix of coefficients
 % used to predict next value, in formula x_n = c[1] x_n-1 + c[2] x_n-2
 % mean_squared_error is of dimension num_states by meas_dimension, and gives an estimate
 % of the variance of residuals (used as a probability measure for state
 % distribution around the predicted value)
-function [coeffs, mean_squared_error] = fit_AR_models(data, prob_each_state, num_states, degree, fitIntercept, additional_info)
+function [coeffs, mean_squared_error] = fit_AR_models(data, prob_each_state, num_states, degree, fitIntercept, additional_info, is_ref_frame_additional)
 %%
 % %initialization for testing function (normally commented out)
 % timeSeriesName = "../pose_data_all_1.txt";
@@ -66,6 +69,21 @@ for state = 1:num_states
         weights = prob_each_state(raw_data_indices,state);
         weights = time * rescale_weights(weights);
 %        weights = weights * size(raw_data_indices,1) / sum(weights);
+        if (is_ref_frame_additional && addl_info_count > 0)
+          lm_frame1 = fitlm(X(:,1:degree),y,'Intercept',fitIntercept, 'Weights', weights)
+          shifted_y = y - additional_info(raw_data_indices,meas_var);
+          lm_frame2 = fitlm(X(:,1:degree),shifted_y,'Intercept',fitIntercept, 'Weights', weights)
+          if (lm_frame1.MSE < lm_frame2.MSE)
+              coeffs(state, meas_var, 1:(degree + 1)) = lm_frame1.Coefficients.Estimate;
+              mean_squared_error(state,  meas_var) = lm_frame1.MSE;
+          else
+              coeffs(state, meas_var, 1:(degree + 1)) = lm_frame2.Coefficients.Estimate;
+              coeffs(state, meas_var, (degree + meas_var + 1):(degree + meas_var + 1)) = 1;
+              mean_squared_error(state,  meas_var) = lm_frame2.MSE;
+          end
+        else
+       
+
          lm = fitlm(X,y,'Intercept',fitIntercept, 'Weights', weights);
          coeffs(state, meas_var, :) = lm.Coefficients.Estimate;
          mean_squared_error(state,  meas_var) = lm.MSE;
@@ -78,5 +96,6 @@ for state = 1:num_states
 %             coeffs(state, meas_var, :) = [FitInfo.Intercept(:,lassoChoice),B(:,lassoChoice)'];
 %             mean_squared_error(state,  meas_var) = FitInfo.MSE(:,lassoChoice);
 %         end
+        end
     end
 end

@@ -4,15 +4,18 @@ rng(0)
 %data = data(1:100000,3);
 time = size(data,1);
 data = smoothdata(data(1:time,:),'gaussian',10);
-spoon_data = data(:, 6:6);
-hat_data = data(:, 3:3);
+spoon_data = data(:, 2:3);
+hat_data = data(:, 5:6);
+spoon_data = diff(spoon_data);
+hat_data = diff(hat_data);
 %data = smoothdata(data(1:100000,:),'gaussian',500);
-num_states = 4;
-degree = 1;
-additional_data = zeros(time,0);
-additional_data = hat_data;
+num_states = 2;
+degree = 0;
+additional_data = zeros(size(hat_data,1),0);
+%additional_data = hat_data;
+is_ref_frame_additional = false;
 
-[prob_each_state, coeffs, mean_squared_error] = expectation_maximize(spoon_data, num_states, degree, additional_data);
+[prob_each_state, coeffs, mean_squared_error] = expectation_maximize(spoon_data, num_states, degree, additional_data, is_ref_frame_additional);
 
 start = spoon_data(1:degree,:);
 est_path = get_computed_path(start, coeffs, prob_each_state, additional_data);

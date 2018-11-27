@@ -1,5 +1,6 @@
 % INPUT
 % data is a Time by Measurement Dimension matrix.
+% additional_info is the additional_info about this model.
 % coeffs is a states by measurement dimension by degree matrix
 % mean_squared_error is a states by measurement dimension matrix
 % fitIntercept (whether the first coeff is an intercept term (true) or a data
@@ -8,7 +9,7 @@
 % probs is the probability that, for each state, the values observed might be pulled from
 % the model predicted by that state, for each time.
 % it is of dimension time by number_of_states
-function [probs] = probability_of_value_per_state(data, coeffs, mean_squared_error, fitIntercept)
+function [probs] = probability_of_value_per_state(data, additional_info, coeffs, mean_squared_error, fitIntercept)
 %%
 % %initialization for testing function (normally commented out)
 % timeSeriesName = "../pose_data_all_1.txt";
@@ -26,10 +27,11 @@ function [probs] = probability_of_value_per_state(data, coeffs, mean_squared_err
 %%
 measurement_dimension = size(data,2);
 time = size(data,1);
+addl_info_count = size(additional_info,2);
 if fitIntercept
-degree = size(coeffs,3) - 1;
+degree = size(coeffs,3) - addl_info_count - 1;
 else
-degree = size(coeffs,3);
+degree = size(coeffs,3) - addl_info_count;
 end
 num_states = size(coeffs,1);
 % pad the data with the first value (not with zeros)
@@ -44,12 +46,15 @@ for meas_var = 1:measurement_dimension
     for deg = 1:degree
         X(:,deg) = padded_data(real_time_indices - deg, meas_var);
     end
+    for extra = 1:addl_info_count
+        X(:,degree + extra) = additional_info(:,extra);
+    end
     if fitIntercept
-        coeff_vals = coeffs(:, meas_var, 2:(degree+1));
+        coeff_vals = coeffs(:, meas_var, 2:(degree+addl_info_count+1));
     else
         coeff_vals = coeffs(:, meas_var, :);
     end
-    coeff_vals = reshape(coeff_vals,[num_states, degree]);
+    coeff_vals = reshape(coeff_vals,[num_states, degree + addl_info_count]);
     if fitIntercept
         pred_y = (coeff_vals * X')' + coeffs(:, meas_var, 1)';
     else

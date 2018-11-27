@@ -2,7 +2,10 @@
 % state labels is the assignment of each data to its corresponding hidden
 % state. It is a Time x 1 matrix
 % num_states is the number of hidden states (we build one AR for each)
-function [prob_each_state, coeffs, mean_squared_error] = expectation_maximize(data, num_states, degree, additional_info)
+% is_ref_frame_additional: boolean indicating if the "additional_info" is a
+% reference frame point (that is either added to or not added to
+% predictions, depending on which fits best).
+function [prob_each_state, coeffs, mean_squared_error] = expectation_maximize(data, num_states, degree, additional_info, is_ref_frame_additional)
 %%
 % %initialization for testing function (normally commented out)
 % timeSeriesName = "../pose_data_full_1.txt";
@@ -22,11 +25,11 @@ fitIntercept = true;
 regularization_param = 0.00;
 % magic parameter that decides how quickly we update the transition and init matrices
 % setting this to 1 makes it not exist
-update_size = .9;
+update_size = 1.0;
 % whether the transition dynamics of HMM are believed at all
 trust_HMM = 0.2;
 % up the MSE slightly to avoid problems when fit is perfect
-mse_fudge = 0.00000000000000001;
+mse_fudge = 0.000001;
 
 %% randomly initialize transition probabilities
 [init, transition] = initialize_HMM(num_states);
@@ -38,10 +41,10 @@ prob_each_state = unscaled_prob_each_state ./ sum(unscaled_prob_each_state,2);
 first_run = true;
 
 %%
-for run_counter = 1:100
+for run_counter = 1:20
     %%
     % fit AR model
-    [new_coeffs, new_mean_squared_error] = fit_AR_models(data, prob_each_state, num_states, degree, fitIntercept, additional_info);
+    [new_coeffs, new_mean_squared_error] = fit_AR_models(data, prob_each_state, num_states, degree, fitIntercept, additional_info, is_ref_frame_additional);
     "running " + run_counter
     squeeze(new_mean_squared_error)
     squeeze(new_coeffs)
@@ -59,7 +62,7 @@ for run_counter = 1:100
     mean_squared_error = (1-regularization_param) * mean_squared_error + regularization_param * sum(mean_squared_error)/num_states;
     
     % compute probability of emitting each value given AR model for each state
-    [probs] = probability_of_value_per_state(data, coeffs, mean_squared_error, fitIntercept);
+    [probs] = probability_of_value_per_state(data, additional_info, coeffs, mean_squared_error, fitIntercept);
     
     % compute new init and transition and state assignments given baum-welch
     [new_init, new_transition, new_prob_each_state] = baum_welch(init, transition, probs);

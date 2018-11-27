@@ -27,8 +27,8 @@ for i = (degree+1):time
             X(1,degree + extra) = additional_info(i, extra);
         end
         cofs = reshape(prob_states(i,:) * reshape(coeffs(:,dim,:),num_states,degree + addl_info_count+1),addl_info_count + degree+1,1);
-        intcept = cofs(1);
-        othercoefs = cofs(2:(degree + addl_info_count +1));
+        intcept = cofs(1,:);
+        othercoefs = cofs(2:(degree + addl_info_count +1),:);
         path(i,dim) = intcept + othercoefs' * X';
     end
 end
