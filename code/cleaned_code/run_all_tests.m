@@ -2,3 +2,5 @@ clear;
 test_get_x_data
 test_build_models
 test_fit_AR_models
+clear;
+test_apply_linear_model

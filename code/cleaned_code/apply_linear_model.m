@@ -5,7 +5,7 @@ function [z_score, resid_y] = apply_linear_model(padded_data, additional_info, m
     time = size(padded_data,1) - degree;
     padded_time_indices = (1:time) + degree;
     y = padded_data(padded_time_indices, meas_var);
-    X = get_x_values(padded_data, additional_info, (1:time), meas_var, model_options);
+    X = get_x_values(padded_data, additional_info, (1:time)', meas_var, model_options);
     
     if model_options.fitIntercept
         non_int_coeff_vals = coeffs(:, meas_var, 2:end);
