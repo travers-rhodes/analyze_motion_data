@@ -26,7 +26,7 @@ update_size = .9;
 % whether the transition dynamics of HMM are believed at all
 trust_HMM = 0.2;
 % up the MSE slightly to avoid problems when fit is perfect
-mse_fudge = 0.0000001;
+mse_fudge = 0.00000000000000001;
 
 %% randomly initialize transition probabilities
 [init, transition] = initialize_HMM(num_states);
@@ -38,7 +38,7 @@ prob_each_state = unscaled_prob_each_state ./ sum(unscaled_prob_each_state,2);
 first_run = true;
 
 %%
-for run_counter = 1:10
+for run_counter = 1:100
     %%
     % fit AR model
     [new_coeffs, new_mean_squared_error] = fit_AR_models(data, prob_each_state, num_states, degree, fitIntercept, additional_info);

@@ -1,5 +1,5 @@
-% this path doesn't use any REAL position data (uses models on models
-function [path] = get_computed_path(start, coeffs, prob_states, additional_info)
+%% this path uses real data when modeling future points
+function [path] = get_modeled_path(start, coeffs, prob_states, data, additional_info)
 %%
 time = size(prob_states,1);
 num_measurments = size(start,2);
@@ -21,7 +21,7 @@ for i = (degree+1):time
     %[~, state] = max(prob_states(i,:));
     for dim = 1:size(coeffs,2)
         for deg = 1:degree
-            X(1,deg) = path(i - deg, dim);
+            X(1,deg) = data(i - deg, dim);
         end
         for extra = 1:addl_info_count
             X(1,degree + extra) = additional_info(i, extra);

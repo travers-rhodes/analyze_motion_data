@@ -65,18 +65,18 @@ for state = 1:num_states
         % scale weights?
         weights = prob_each_state(raw_data_indices,state);
         weights = time * rescale_weights(weights);
-%         weights = weights * size(raw_data_indices,1) / sum(weights);
-%         lm = fitlm(X,y,'Intercept',fitIntercept, 'Weights', weights);
-%         coeffs(state, meas_var, :) = lm.Coefficients.Estimate;
-%         mean_squared_error(state,  meas_var) = lm.MSE;
-        [B,FitInfo] = lasso(X,y,'Alpha',0.5,'Weights', weights);
-        lassoChoice = 5;
-        if size(B,2) < lassoChoice
-           coeffs(state, meas_var, :) = [FitInfo.Intercept(size(B,2)),B(:,size(B,2))'];
-           mean_squared_error(state,  meas_var) = FitInfo.MSE(size(B,2));
-        else
-            coeffs(state, meas_var, :) = [FitInfo.Intercept(:,lassoChoice),B(:,lassoChoice)'];
-            mean_squared_error(state,  meas_var) = FitInfo.MSE(:,lassoChoice);
-        end
+%        weights = weights * size(raw_data_indices,1) / sum(weights);
+         lm = fitlm(X,y,'Intercept',fitIntercept, 'Weights', weights);
+         coeffs(state, meas_var, :) = lm.Coefficients.Estimate;
+         mean_squared_error(state,  meas_var) = lm.MSE;
+%         [B,FitInfo] = lasso(X,y,'Alpha',0.1,'Weights', weights);
+%         lassoChoice = 10;
+%         if size(B,2) < lassoChoice
+%            coeffs(state, meas_var, :) = [FitInfo.Intercept(size(B,2)),B(:,size(B,2))'];
+%            mean_squared_error(state,  meas_var) = FitInfo.MSE(size(B,2));
+%         else
+%             coeffs(state, meas_var, :) = [FitInfo.Intercept(:,lassoChoice),B(:,lassoChoice)'];
+%             mean_squared_error(state,  meas_var) = FitInfo.MSE(:,lassoChoice);
+%         end
     end
 end
