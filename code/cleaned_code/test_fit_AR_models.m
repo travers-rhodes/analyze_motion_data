@@ -128,7 +128,7 @@ clear;
 model_options.fitIntercept = true;
 model_options.degree = 2;
 model_options.is_fit_to_frame = true;
-num_states = 2;
+num_states = 1;
 x = [[1];[1];[1];[2];[3]];
 prob_each_state = ones(5,1)/5;
 
@@ -152,5 +152,17 @@ try
 catch e
     hitError = true;
     assert(contains(e.message, "additional_info"))
+end
+assert(hitError == true)
+
+model_options.fitIntercept = true;
+num_states = 2;
+additional_info = [1;2;3;4;5];
+hitError = false;
+try
+[coeffs,mean_squared_error] = fit_AR_models(x, prob_each_state, num_states, additional_info, model_options);
+catch e
+    hitError = true;
+    assert(contains(e.message, "num_states"))
 end
 assert(hitError == true)

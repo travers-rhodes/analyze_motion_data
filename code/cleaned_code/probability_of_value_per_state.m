@@ -41,7 +41,14 @@ for meas_var = 1:measurement_dimension
     % TODO think this over a little better, maybe. What we're doing here is
     % we're scaling the height of the pdf by the same amount we scaled the
     % width, so that the area stays 1. I guess that's right to do?
-    probs = probs .* normpdf(z_score) ./ sqrt(mean_squared_error(:,meas_var))';
+    %probs = probs .* normpdf(z_score) ./ sqrt(mean_squared_error(:,meas_var))';
+    % we use a t distribution with nu of 3 for funzies. See
+    % experiment_distribution_errors.m for some context
+    nu = 3;
+    default_variance = nu/(nu-2);
+    default_std = sqrt(default_variance);
+
+    probs = tpdf(z_score*default_std,nu)./ sqrt(mean_squared_error(:,meas_var))' * default_variance;
 end
 % normalize since you must be in some state
 sum_probs = sum(probs, 2);

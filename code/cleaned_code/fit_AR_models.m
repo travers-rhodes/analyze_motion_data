@@ -37,6 +37,10 @@ if(size(additional_info,1) ~= size(data,1))
     error("additional_info must have the same number of data points as data");
 end
 
+if(size(prob_each_state,2) ~= num_states)
+    error("the number of states num_states must equal second dim of prob_each_state")
+end
+
 time = size(data,1);
 measurement_dimension = size(data,2);
 addl_info_count = size(additional_info,2);
