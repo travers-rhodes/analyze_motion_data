@@ -57,6 +57,11 @@ padded_data = construct_padded_data(data, model_options.degree);
 % pre-allocate coeffs and mean_squared_error for speed
 coeffs = zeros(num_states, measurement_dimension, final_num_coeffs);
 mean_squared_error = zeros(num_states, measurement_dimension);
+
+
+% scale weights
+all_weights = rescale_all_weights(prob_each_state);
+
 for state = 1:num_states
     non_zero_prob_indices = find(prob_each_state(:,state) > 0);
     raw_data_indices = non_zero_prob_indices;
@@ -74,9 +79,7 @@ for state = 1:num_states
         
         X = get_x_values(padded_data, additional_info, raw_data_indices, meas_var, model_options);
         
-        % scale weights
-        weights = prob_each_state(raw_data_indices,state);
-        weights = rescale_weights(weights);
+        weights = all_weights(raw_data_indices,state);
         
         if (model_options.is_fit_to_frame && addl_info_count > 0)
             if (addl_info_count ~= measurement_dimension)

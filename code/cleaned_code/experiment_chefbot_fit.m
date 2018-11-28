@@ -10,7 +10,7 @@ num_states = 5;
 additional_data = zeros(size(spoon_data,1),0);
 
 model_options.fitIntercept = true;
-model_options.degree=2;
+model_options.degree=1
 model_options.is_fit_to_frame = false;
 model_options.number_iterations = 100;
 residual_options.isGaussian=false;
