@@ -7,5 +7,7 @@ function [coeffs, mean_squared_error] = fit_linear_model(X, y, weights, fitInter
     
     lm = fitlm(X,y,'Intercept', fitIntercept, 'Weights', weights);
     coeffs(1, 1, :) = lm.Coefficients.Estimate;
-    mean_squared_error = lm.MSE;
+    % we use the unbiased estimator because I don't think we want to 
+    % penalize small samples in this step. (we'll see)
+    mean_squared_error = lm.SSE/sum(weights);
 end

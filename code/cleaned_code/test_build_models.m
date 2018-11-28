@@ -1,4 +1,5 @@
-eps = 0.00000000001;
+clear;
+eps = 10e-10;
 x = [[1,1];[1,2];[1,3];[2,4]];
 y = [[1;2;3;5]];
 weights = [[1;1;1;1]];
@@ -14,8 +15,8 @@ coeffs = zeros(5,4,2);
 [coeffs(2,2,:),mean_squared_error] = fit_linear_model(x,y,weights,false);
 assert(coeffs(1,1,1) == 0);
 assert(abs(coeffs(2,2,1) - 2/7.0) < eps);
-% note divide by two because dofs
-assert(abs(mean_squared_error - ((2/7)^2 * 3 + (3/7)^2)/2) < eps);
+% note divide by four because we use biased estimate
+assert(abs(mean_squared_error - ((2/7)^2 * 3 + (3/7)^2)/4) < eps);
 
 
 coeffs = zeros(5,4,10);
@@ -38,7 +39,7 @@ assert(coeffs(1,1,1) == 0);
 assert(abs(coeffs(2,2,1) - -1.5) < eps);
 assert(abs(coeffs(2,2,2) - 2.5) < eps);
 assert(abs(coeffs(2,2,3) - 0.5) < eps);
-assert(abs(mean_squared_error - 0.5) < eps);
+assert(abs(mean_squared_error - 0.2) < eps);
 
 
 coeffs = zeros(5,4,10);
@@ -47,7 +48,7 @@ frame_value = [[1;2;3;4;5]];
 assert(abs(coeffs(2,2,1) - -0.75) < eps);
 assert(abs(coeffs(2,2,2) - 0.25) < eps);
 assert(abs(coeffs(2,2,3) - 0.25) < eps);
-assert(abs(mean_squared_error - 0.1250) < eps);
+assert(abs(mean_squared_error - 0.25/5) < eps);
 
 y = [[0;0;0;1;0;]];
 coeffs = zeros(5,4,3);
@@ -55,4 +56,4 @@ coeffs = zeros(5,4,3);
 assert(abs(coeffs(2,2,1) - -0.75) < eps);
 assert(abs(coeffs(2,2,2) - 0.25) < eps);
 assert(abs(coeffs(2,2,3) - 0.25) < eps);
-assert(abs(mean_squared_error - 0.1250) < eps);
+assert(abs(mean_squared_error - 0.25/5) < eps);

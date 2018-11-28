@@ -40,7 +40,7 @@ for meas_var = 1:measurement_dimension
     [z_score, ~] = apply_linear_model(padded_data, additional_info, model_options, coeffs, mean_squared_error, meas_var);
     % TODO think this over a little better, maybe. What we're doing here is
     % we're scaling the height of the pdf by the same amount we scaled the
-    % width, so that the area stays 1.
+    % width, so that the area stays 1. I guess that's right to do?
     probs = probs .* normpdf(z_score) ./ sqrt(mean_squared_error(:,meas_var))';
 end
 % normalize since you must be in some state

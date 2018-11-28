@@ -8,10 +8,10 @@ function [coeffs, mean_squared_error] = fit_frame_based_model(X, y, weights, fra
     
     if (lm_frame1.MSE < lm_frame2.MSE)
       coeffs(1,1, 1:(degree + 1)) = lm_frame1.Coefficients.Estimate;
-      mean_squared_error = lm_frame1.MSE;
+      mean_squared_error = lm_frame1.SSE/sum(weights);
     else
       coeffs(1, 1, 1:(degree + 1)) = lm_frame2.Coefficients.Estimate;
       coeffs(1, 1, degree + meas_var + 1) = 1;
-      mean_squared_error = lm_frame2.MSE;
+      mean_squared_error = lm_frame2.SSE/sum(weights);
     end
 end

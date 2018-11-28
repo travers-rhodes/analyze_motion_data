@@ -71,7 +71,7 @@ for state = 1:num_states
         
         % scale weights
         weights = prob_each_state(raw_data_indices,state);
-        weights = time * rescale_weights(weights);
+        weights = rescale_weights(weights);
         
         if (model_options.is_fit_to_frame && addl_info_count > 0)
             if (addl_info_count ~= measurement_dimension)
