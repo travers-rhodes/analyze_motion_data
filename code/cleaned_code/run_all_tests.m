@@ -1,3 +1,4 @@
+"Starting tests"
 clear;
 test_apply_linear_model
 clear;
@@ -7,3 +8,4 @@ test_get_x_data
 clear
 test_probability_of_value_per_state
 test_rescale_weights
+"All tests succeeded"

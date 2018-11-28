@@ -63,6 +63,7 @@ for state = 1:num_states
     
     if size(raw_data_indices,1) == 0
         %TODO: Throw error here? Reset to larger pool of points?
+        error("How did you manage to have no data, I ask you")
         continue
     end
     

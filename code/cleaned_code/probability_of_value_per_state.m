@@ -10,7 +10,7 @@
 % probs is the probability that, for each state, the values observed might be pulled from
 % the model predicted by that state, for each time.
 % it is of dimension time by number_of_states
-function [probs] = probability_of_value_per_state(data, additional_info, coeffs, mean_squared_error, model_options)
+function [probs] = probability_of_value_per_state(data, additional_info, coeffs, mean_squared_error, model_options, residual_options)
 %%
 % %initialization for testing function (normally commented out)
 % timeSeriesName = "../pose_data_all_1.txt";
@@ -38,17 +38,17 @@ probs = ones(time, num_states);
 for meas_var = 1:measurement_dimension
     %%
     [z_score, ~] = apply_linear_model(padded_data, additional_info, model_options, coeffs, mean_squared_error, meas_var);
-    % TODO think this over a little better, maybe. What we're doing here is
-    % we're scaling the height of the pdf by the same amount we scaled the
-    % width, so that the area stays 1. I guess that's right to do?
-    %probs = probs .* normpdf(z_score) ./ sqrt(mean_squared_error(:,meas_var))';
-    % we use a t distribution with nu of 3 for funzies. See
-    % experiment_distribution_errors.m for some context
-    nu = 3;
-    default_variance = nu/(nu-2);
-    default_std = sqrt(default_variance);
-
-    probs = tpdf(z_score*default_std,nu)./ sqrt(mean_squared_error(:,meas_var))' * default_variance;
+   
+    if (residual_options.isGaussian)
+        probs = probs .* normpdf(z_score) ./ sqrt(mean_squared_error(:,meas_var))';
+    else
+        % we use a t distribution with nu of 3 for funzies. See
+        % experiment_distribution_errors.m for some context
+        nu = 3;
+        default_variance = nu/(nu-2);
+        default_std = sqrt(default_variance);
+        probs = tpdf(z_score*default_std,nu)./ sqrt(mean_squared_error(:,meas_var))' * default_variance;
+    end
 end
 % normalize since you must be in some state
 sum_probs = sum(probs, 2);
